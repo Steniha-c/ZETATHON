@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   Shield, Users, Trophy, Download, Search, CheckCircle2,
-  AlertCircle, Trash2, Edit3, Plus, Bell, RefreshCw, Send,
-  Layers, Clock, FileCode, ExternalLink, HelpCircle, Save, Award, Sparkles,
-  FileText, Mail, Eye, X, Check, ArrowRight, CornerDownRight, History, AlertTriangle
+  Trash2, Edit3, Bell, RefreshCw, FileCode, ExternalLink, Sparkles,
+  FileText, Eye, X, History
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.js';
 import { api } from '../services/api.js';
-import { Team, Submission, Announcement, Challenge, TimelineItem, FaqItem, HackathonConfig } from '../types/index.js';
+import { Team, Submission, Announcement, HackathonConfig } from '../types/index.js';
 import { HACKATHON_CONFIG } from '../hackathon.config.js';
 
 export const AdminDashboardPage: React.FC = () => {
-  const { user, isAdmin } = useAuth();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<'overview' | 'teams' | 'submissions' | 'announcements' | 'cms'>('overview');
 
   // Overview data
@@ -26,7 +25,14 @@ export const AdminDashboardPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [challengeFilter, setChallengeFilter] = useState('all');
+  const [departmentFilter, setDepartmentFilter] = useState('all');
+  const [yearFilter, setYearFilter] = useState('all');
   const [isLoading, setIsLoading] = useState(true);
+  const [adminLoadError, setAdminLoadError] = useState<string | null>(null);
+  const [teamsLoaded, setTeamsLoaded] = useState(false);
+  const [submissionsLoaded, setSubmissionsLoaded] = useState(false);
+  const [announcementsLoaded, setAnnouncementsLoaded] = useState(false);
+  const [configLoaded, setConfigLoaded] = useState(false);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
 
   // Modal: Team Details
@@ -55,26 +61,58 @@ export const AdminDashboardPage: React.FC = () => {
 
   const loadAllAdminData = async () => {
     setIsLoading(true);
-    try {
-      const [overviewData, teamsData, subsData, annData, cfgData] = await Promise.all([
-        api.admin.getOverview().catch(() => null),
-        api.admin.getTeams().catch(() => ({ teams: [] })),
-        api.admin.getSubmissions().catch(() => ({ submissions: [] })),
-        api.getAnnouncements().catch(() => []),
-        api.getConfig().catch(() => HACKATHON_CONFIG),
-      ]);
+    setAdminLoadError(null);
+    const results = await Promise.allSettled([
+      api.admin.getOverview(),
+      api.admin.getTeams(),
+      api.admin.getSubmissions(),
+      api.admin.getAnnouncements(),
+      api.admin.getConfig(),
+    ]);
+    const failed: string[] = [];
+    const [overviewResult, teamsResult, submissionsResult, announcementsResult, configResult] = results;
 
-      if (overviewData?.data) setStats(overviewData.data);
-      if (teamsData?.teams) setTeams(teamsData.teams);
-      if (subsData?.submissions) setSubmissions(subsData.submissions);
-      if (annData) setAnnouncements(annData);
-      if (cfgData) {
-        setConfig(cfgData);
-        setCmsConfig(cfgData);
-      }
-    } finally {
-      setIsLoading(false);
+    if (overviewResult.status === 'fulfilled') setStats(overviewResult.value.data);
+    else failed.push('overview statistics');
+
+    if (teamsResult.status === 'fulfilled') {
+      setTeams(teamsResult.value.teams);
+      setTeamsLoaded(true);
+    } else {
+      setTeams([]);
+      setTeamsLoaded(false);
+      failed.push('team registrations');
     }
+
+    if (submissionsResult.status === 'fulfilled') {
+      setSubmissions(submissionsResult.value.submissions);
+      setSubmissionsLoaded(true);
+    } else {
+      setSubmissions([]);
+      setSubmissionsLoaded(false);
+      failed.push('project submissions');
+    }
+
+    if (announcementsResult.status === 'fulfilled') {
+      setAnnouncements(announcementsResult.value);
+      setAnnouncementsLoaded(true);
+    } else {
+      setAnnouncements([]);
+      setAnnouncementsLoaded(false);
+      failed.push('announcements');
+    }
+
+    if (configResult.status === 'fulfilled') {
+      setConfig(configResult.value);
+      setCmsConfig(configResult.value);
+      setConfigLoaded(true);
+    } else {
+      setConfigLoaded(false);
+      failed.push('event configuration');
+    }
+
+    if (failed.length) setAdminLoadError(`Could not load ${failed.join(', ')}. Refresh to retry; unavailable data is not shown as zero.`);
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -235,8 +273,26 @@ export const AdminDashboardPage: React.FC = () => {
       if (t.challengeId !== challengeFilter && t.challengeCode !== challengeFilter) return false;
     }
 
+    if (departmentFilter !== 'all' && t.department !== departmentFilter) return false;
+    if (yearFilter !== 'all' && t.year !== yearFilter) return false;
+
     return true;
   });
+
+  const departmentOptions = Array.from(new Set(teams.map((team) => team.department).filter(Boolean))).sort();
+  const yearOptions = Array.from(new Set(teams.map((team) => team.year).filter(Boolean))).sort();
+  const participantsFromTeams = teams.reduce((total, team) => total + 1 + (team.members?.length || 0), 0);
+  const metricValue = (apiValue: unknown, fallback: number): number | string =>
+    typeof apiValue === 'number' && Number.isFinite(apiValue)
+      ? apiValue
+      : teamsLoaded ? fallback : '—';
+  const totalTeamsMetric = metricValue(stats?.totalTeams, teams.length);
+  const totalParticipantsMetric = metricValue(stats?.totalParticipants, participantsFromTeams);
+  const pptMetric = metricValue(stats?.pptSubmissions, teams.filter((team) => !!team.pptFile).length);
+  const pendingMetric = metricValue(stats?.pendingReviewTeams, teams.filter((team) => ['pending_review', 'pending_approval', 'pending', 'pending_verification'].includes(team.status)).length);
+  const shortlistedMetric = metricValue(stats?.shortlistedTeams, teams.filter((team) => ['shortlisted', 'approved'].includes(team.status)).length);
+  const waitlistedMetric = metricValue(stats?.waitlistedTeams, teams.filter((team) => team.status === 'waitlisted').length);
+  const notShortlistedMetric = metricValue(stats?.notShortlistedTeams, teams.filter((team) => ['not_shortlisted', 'rejected'].includes(team.status)).length);
 
   const getStatusBadge = (status: string) => {
     if (status === 'shortlisted' || status === 'approved') {
@@ -268,10 +324,49 @@ export const AdminDashboardPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen pt-28 pb-20 px-4 sm:px-6 lg:px-8 relative z-10 bg-gradient-to-b from-pink-50/60 via-pink-100/30 to-rose-50/40 text-slate-800">
-      <div className="max-w-7xl mx-auto space-y-8">
+    <div className="admin-page">
+      <div className="admin-layout">
+        <aside className="admin-sidebar">
+          <div className="admin-sidebar__brand">
+            <img src="/zeta-logo.jpg" alt="" />
+            <div><strong>ZETATHON</strong><small>ORGANIZER SYSTEM</small></div>
+          </div>
+          <span className="admin-sidebar__label">Workspace</span>
+          <nav className="admin-sidebar__nav" aria-label="Organizer sections">
+            {[
+              { id: 'overview', label: 'Overview', icon: Trophy },
+              { id: 'teams', label: 'Team registrations', icon: Users, count: teams.length },
+              { id: 'submissions', label: 'Project submissions', icon: FileCode, count: submissions.length },
+              { id: 'announcements', label: 'Announcements', icon: Bell, count: announcements.length },
+              { id: 'cms', label: 'Event configuration', icon: Edit3 },
+            ].map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setActiveTab(tab.id as typeof activeTab)}
+                  className={isActive ? 'is-active' : ''}
+                  aria-current={isActive ? 'page' : undefined}
+                >
+                  <Icon aria-hidden="true" />
+                  <span>{tab.label}</span>
+                  {typeof tab.count === 'number' && <span className="admin-nav-count">{tab.count}</span>}
+                </button>
+              );
+            })}
+          </nav>
+          <div className="admin-sidebar__footer">
+            <span>Signed in as</span>
+            <strong>{user?.fullName || user?.email || 'Organizer'}</strong>
+          </div>
+        </aside>
+
+        <main className="admin-main">
+        <div className="admin-main__content space-y-8">
         {/* Header Bar */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl border border-pink-200/80 bg-white/95 backdrop-blur-xl shadow-xl shadow-pink-100/50">
+        <div className="admin-header flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl border border-pink-200/80 bg-white/95 backdrop-blur-xl shadow-xl shadow-pink-100/50">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-pink-500 to-rose-400 p-0.5 shadow-md shadow-pink-300/40 shrink-0">
               <div className="w-full h-full bg-white rounded-[14px] flex items-center justify-center">
@@ -288,11 +383,11 @@ export const AdminDashboardPage: React.FC = () => {
               </div>
 
               <h1 className="text-2xl sm:text-3xl font-black font-mono tracking-tight text-slate-900 uppercase">
-                ZETATHON SELECTION PORTAL
+                Organizer dashboard
               </h1>
 
               <p className="text-xs text-slate-600 font-mono">
-                Administrator: <span className="text-pink-600 font-bold">{user?.fullName || 'ZETA Core'}</span> ({user?.email})
+                Administrator: <span className="admin-title-accent text-pink-600 font-bold">{user?.fullName || 'ZETA Core'}</span> ({user?.email})
               </p>
             </div>
           </div>
@@ -328,8 +423,16 @@ export const AdminDashboardPage: React.FC = () => {
           </motion.div>
         )}
 
+        {isLoading && <div className="admin-loading-bar" role="progressbar" aria-label="Loading organizer data" />}
+        {adminLoadError && (
+          <div className="admin-error rounded-xl p-4 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3" role="alert">
+            <span>{adminLoadError}</span>
+            <button type="button" onClick={loadAllAdminData} className="px-3 py-2 border border-rose-300/30 hover:bg-rose-400/10 font-mono uppercase font-bold">Retry data load</button>
+          </div>
+        )}
+
         {/* Tab Navigation */}
-        <div className="flex flex-wrap items-center gap-2 border-b border-pink-200/80 pb-2">
+        <div className="hidden" aria-hidden="true">
           {[
             { id: 'overview', label: 'Selection Overview', icon: Trophy },
             { id: 'teams', label: `Teams & PPT Submissions (${teams.length})`, icon: Users },
@@ -360,55 +463,41 @@ export const AdminDashboardPage: React.FC = () => {
         {/* TAB 1: OVERVIEW */}
         {activeTab === 'overview' && (
           <div className="space-y-8">
-            <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
-              <div className="p-5 rounded-2xl border border-pink-200 bg-white/90 backdrop-blur-md shadow-md shadow-pink-100/40">
-                <span className="text-[11px] font-mono uppercase text-slate-500 font-semibold">Total Teams</span>
-                <p className="text-3xl font-black font-mono text-slate-900 mt-1">{teams.length}</p>
-                <p className="text-[10px] text-slate-500 mt-1 font-mono">
-                  {teams.reduce((acc, t) => acc + 1 + (t.members?.length || 0), 0)} Delegates
-                </p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
+              <div className="admin-stat-card p-5 rounded-2xl border border-pink-200 bg-white/90 backdrop-blur-md shadow-md">
+                <span className="text-[11px] font-mono uppercase text-slate-500 font-semibold">Registered Teams</span>
+                <p className="text-3xl font-black font-mono text-slate-900 mt-2">{totalTeamsMetric}</p>
+                <p className="text-[10px] text-slate-500 mt-1 font-mono">Persisted registrations</p>
               </div>
-
-              <div className="p-5 rounded-2xl border border-pink-200 bg-white/90 backdrop-blur-md shadow-md shadow-pink-100/40">
+              <div className="admin-stat-card p-5 rounded-2xl border border-pink-200 bg-white/90 backdrop-blur-md shadow-md">
+                <span className="text-[11px] font-mono uppercase text-slate-500 font-semibold">Participants</span>
+                <p className="text-3xl font-black font-mono text-slate-900 mt-2">{totalParticipantsMetric}</p>
+                <p className="text-[10px] text-slate-500 mt-1 font-mono">Leaders + roster members</p>
+              </div>
+              <div className="admin-stat-card p-5 rounded-2xl border border-pink-200 bg-white/90 backdrop-blur-md shadow-md">
                 <span className="text-[11px] font-mono uppercase text-pink-600 font-semibold">PPT Decks Uploaded</span>
-                <p className="text-3xl font-black font-mono text-pink-600 mt-1">
-                  {teams.filter(t => !!t.pptFile).length}
-                </p>
-                <p className="text-[10px] text-pink-600/80 mt-1 font-mono">
-                  {Math.round((teams.filter(t => !!t.pptFile).length / Math.max(teams.length, 1)) * 100)}% Upload Rate
-                </p>
+                <p className="text-3xl font-black font-mono text-pink-600 mt-2">{pptMetric}</p>
+                <p className="text-[10px] text-slate-500 mt-1 font-mono">Presentation files received</p>
               </div>
-
-              <div className="p-5 rounded-2xl border border-amber-200 bg-amber-50/60 backdrop-blur-md shadow-md shadow-amber-100/40">
+              <div className="admin-stat-card p-5 rounded-2xl border border-amber-200 bg-amber-50/60 backdrop-blur-md shadow-md">
                 <span className="text-[11px] font-mono uppercase text-amber-700 font-semibold">Pending Review</span>
-                <p className="text-3xl font-black font-mono text-amber-700 mt-1">
-                  {teams.filter(t => ['pending_review', 'pending_approval', 'pending', 'pending_verification'].includes(t.status)).length}
-                </p>
-                <p className="text-[10px] text-amber-700/80 mt-1 font-mono">Awaiting Review</p>
+                <p className="text-3xl font-black font-mono text-amber-700 mt-2">{pendingMetric}</p>
+                <p className="text-[10px] text-slate-500 mt-1 font-mono">Awaiting organizer decision</p>
               </div>
-
-              <div className="p-5 rounded-2xl border border-emerald-200 bg-emerald-50/60 backdrop-blur-md shadow-md shadow-emerald-100/40">
+              <div className="admin-stat-card p-5 rounded-2xl border border-emerald-200 bg-emerald-50/60 backdrop-blur-md shadow-md">
                 <span className="text-[11px] font-mono uppercase text-emerald-700 font-semibold">Shortlisted</span>
-                <p className="text-3xl font-black font-mono text-emerald-700 mt-1">
-                  {teams.filter(t => ['shortlisted', 'approved'].includes(t.status)).length}
-                </p>
-                <p className="text-[10px] text-emerald-700/80 mt-1 font-mono">Advanced to Sprint</p>
+                <p className="text-3xl font-black font-mono text-emerald-700 mt-2">{shortlistedMetric}</p>
+                <p className="text-[10px] text-slate-500 mt-1 font-mono">Current selection status</p>
               </div>
-
-              <div className="p-5 rounded-2xl border border-purple-200 bg-purple-50/60 backdrop-blur-md shadow-md shadow-purple-100/40">
+              <div className="admin-stat-card p-5 rounded-2xl border border-purple-200 bg-purple-50/60 backdrop-blur-md shadow-md">
                 <span className="text-[11px] font-mono uppercase text-purple-700 font-semibold">Waitlisted</span>
-                <p className="text-3xl font-black font-mono text-purple-700 mt-1">
-                  {teams.filter(t => t.status === 'waitlisted').length}
-                </p>
-                <p className="text-[10px] text-purple-700/80 mt-1 font-mono">Reserve Pool</p>
+                <p className="text-3xl font-black font-mono text-purple-700 mt-2">{waitlistedMetric}</p>
+                <p className="text-[10px] text-slate-500 mt-1 font-mono">Current selection status</p>
               </div>
-
-              <div className="p-5 rounded-2xl border border-rose-200 bg-rose-50/60 backdrop-blur-md shadow-md shadow-rose-100/40">
+              <div className="admin-stat-card p-5 rounded-2xl border border-rose-200 bg-rose-50/60 backdrop-blur-md shadow-md">
                 <span className="text-[11px] font-mono uppercase text-rose-700 font-semibold">Not Shortlisted</span>
-                <p className="text-3xl font-black font-mono text-rose-700 mt-1">
-                  {teams.filter(t => ['not_shortlisted', 'rejected'].includes(t.status)).length}
-                </p>
-                <p className="text-[10px] text-rose-700/80 mt-1 font-mono">Declined</p>
+                <p className="text-3xl font-black font-mono text-rose-700 mt-2">{notShortlistedMetric}</p>
+                <p className="text-[10px] text-slate-500 mt-1 font-mono">Current selection status</p>
               </div>
             </div>
 
@@ -420,14 +509,17 @@ export const AdminDashboardPage: React.FC = () => {
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                 {config.challenges.map((c) => {
-                  const count = teams.filter(t => t.challengeId === c.id || t.challengeCode === c.code).length;
+                  const fallbackCount = teamsLoaded
+                    ? teams.filter(t => t.challengeId === c.id || t.challengeCode === c.code).length
+                    : undefined;
+                  const count = stats?.challengeCounts?.[c.code] ?? fallbackCount;
                   return (
                     <div key={c.id} className="p-3.5 rounded-xl border border-pink-100 bg-pink-50/50 hover:bg-pink-100/50 transition-colors flex items-center justify-between">
                       <div>
                         <span className="text-[10px] font-mono text-pink-600 font-bold">{c.code}</span>
                         <p className="text-xs font-bold text-slate-800 truncate max-w-[200px]">{c.title}</p>
                       </div>
-                      <span className="text-lg font-mono font-black text-pink-900">{count}</span>
+                      <span className="text-lg font-mono font-black text-pink-900">{count ?? '—'}</span>
                     </div>
                   );
                 })}
@@ -440,7 +532,7 @@ export const AdminDashboardPage: React.FC = () => {
         {activeTab === 'teams' && (
           <div className="space-y-6">
             {/* Search & Filters */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="admin-filter-bar rounded-2xl flex flex-col xl:flex-row xl:items-center justify-between gap-4">
               <div className="relative w-full sm:w-96">
                 <Search className="w-4 h-4 text-pink-400 absolute left-3.5 top-3" />
                 <input
@@ -452,7 +544,7 @@ export const AdminDashboardPage: React.FC = () => {
                 />
               </div>
 
-              <div className="flex flex-wrap items-center gap-3 self-start sm:self-auto text-xs font-mono">
+              <div className="flex flex-wrap items-center gap-3 text-xs font-mono">
                 <div className="flex items-center gap-2">
                   <span className="text-slate-600 font-medium">Status:</span>
                   <select
@@ -460,7 +552,7 @@ export const AdminDashboardPage: React.FC = () => {
                     onChange={(e) => setStatusFilter(e.target.value)}
                     className="px-3 py-1.5 rounded-lg border border-pink-200 bg-white text-slate-800 text-xs font-mono focus:border-pink-500 focus:outline-none shadow-sm"
                   >
-                    <option value="all">All Statuses ({teams.length})</option>
+                    <option value="all">All Statuses ({teamsLoaded ? teams.length : '—'})</option>
                     <option value="pending_review">Pending Review</option>
                     <option value="shortlisted">Shortlisted</option>
                     <option value="waitlisted">Waitlisted</option>
@@ -481,12 +573,28 @@ export const AdminDashboardPage: React.FC = () => {
                     ))}
                   </select>
                 </div>
+
+                <div className="flex items-center gap-2">
+                  <span className="text-slate-600 font-medium">Department:</span>
+                  <select value={departmentFilter} onChange={(e) => setDepartmentFilter(e.target.value)} aria-label="Filter by department" className="px-3 py-1.5 rounded-lg border border-pink-200 bg-white text-slate-800 text-xs font-mono focus:border-pink-500 focus:outline-none shadow-sm">
+                    <option value="all">All departments</option>
+                    {departmentOptions.map((departmentName) => <option key={departmentName} value={departmentName}>{departmentName}</option>)}
+                  </select>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <span className="text-slate-600 font-medium">Year:</span>
+                  <select value={yearFilter} onChange={(e) => setYearFilter(e.target.value)} aria-label="Filter by academic year" className="px-3 py-1.5 rounded-lg border border-pink-200 bg-white text-slate-800 text-xs font-mono focus:border-pink-500 focus:outline-none shadow-sm">
+                    <option value="all">All years</option>
+                    {yearOptions.map((academicYear) => <option key={academicYear} value={academicYear}>{academicYear}</option>)}
+                  </select>
+                </div>
               </div>
             </div>
 
             {/* Teams Table */}
-            <div className="rounded-2xl border border-pink-200 bg-white/95 backdrop-blur-md overflow-x-auto shadow-xl shadow-pink-100/40">
-              <table className="w-full text-left text-xs text-slate-700">
+            <div className="admin-data-panel rounded-2xl border border-pink-200 bg-white/95 backdrop-blur-md overflow-x-auto shadow-xl">
+              <table className="admin-data-table w-full text-left text-xs text-slate-700">
                 <thead className="border-b border-pink-200 bg-pink-100/70 font-mono uppercase text-pink-950 text-[11px] font-bold">
                   <tr>
                     <th className="p-4">Reg ID & Team</th>
@@ -500,8 +608,8 @@ export const AdminDashboardPage: React.FC = () => {
                 <tbody className="divide-y divide-pink-100/80">
                   {filteredTeams.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="p-8 text-center text-slate-400 font-medium">
-                        No team registrations match the current filter criteria.
+                      <td colSpan={6} className="admin-empty p-8 text-center text-slate-400 font-medium">
+                        {isLoading ? 'Loading team registrations…' : !teamsLoaded ? 'Team records are unavailable. Use Refresh to retry.' : teams.length === 0 ? 'No team registrations have been recorded.' : 'No team registrations match the current filters.'}
                       </td>
                     </tr>
                   ) : (
@@ -614,8 +722,8 @@ export const AdminDashboardPage: React.FC = () => {
         {/* TAB 3: SUBMISSIONS (PROJECT DELIVERABLES) */}
         {activeTab === 'submissions' && (
           <div className="space-y-6">
-            <div className="rounded-2xl border border-pink-200 bg-white/95 backdrop-blur-md overflow-x-auto shadow-xl shadow-pink-100/40">
-              <table className="w-full text-left text-xs text-slate-700">
+            <div className="admin-data-panel rounded-2xl border border-pink-200 bg-white/95 backdrop-blur-md overflow-x-auto shadow-xl">
+              <table className="admin-data-table w-full text-left text-xs text-slate-700">
                 <thead className="border-b border-pink-200 bg-pink-100/70 font-mono uppercase text-pink-950 text-[11px] font-bold">
                   <tr>
                     <th className="p-4">Team</th>
@@ -628,8 +736,8 @@ export const AdminDashboardPage: React.FC = () => {
                 <tbody className="divide-y divide-pink-100/80">
                   {submissions.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="p-8 text-center text-slate-400 font-medium">
-                        No project deliverables have been submitted yet.
+                      <td colSpan={5} className="admin-empty p-8 text-center text-slate-400 font-medium">
+                        {isLoading ? 'Loading project submissions…' : !submissionsLoaded ? 'Project submissions are unavailable. Use Refresh to retry.' : 'No project deliverables have been submitted yet.'}
                       </td>
                     </tr>
                   ) : (
@@ -781,6 +889,12 @@ export const AdminDashboardPage: React.FC = () => {
             </form>
 
             <div className="space-y-3">
+              {announcementsLoaded && announcements.length === 0 && (
+                <div className="admin-data-panel admin-empty rounded-xl border p-6">No announcements have been published.</div>
+              )}
+              {!announcementsLoaded && !isLoading && (
+                <div className="admin-error rounded-xl p-4 text-xs" role="status">Announcements could not be loaded. Use Refresh to retry.</div>
+              )}
               {announcements.map((a) => (
                 <div key={a.id} className="p-4 rounded-xl border border-pink-200 bg-white flex items-start justify-between gap-4 shadow-sm">
                   <div>
@@ -804,6 +918,11 @@ export const AdminDashboardPage: React.FC = () => {
 
         {/* TAB 5: CMS */}
         {activeTab === 'cms' && (
+          !configLoaded ? (
+            <div className="admin-data-panel admin-empty rounded-2xl border p-8">
+              {isLoading ? 'Loading live event configuration…' : 'Live event configuration is unavailable. Refresh before making changes.'}
+            </div>
+          ) :
           <form onSubmit={handleSaveCmsConfig} className="p-6 rounded-2xl border border-pink-200 bg-white/95 space-y-6 shadow-xl shadow-pink-100/40">
             <h3 className="text-sm font-mono uppercase font-bold text-slate-900 flex items-center gap-2">
               <Edit3 className="w-4 h-4 text-pink-500" />
@@ -1065,6 +1184,8 @@ export const AdminDashboardPage: React.FC = () => {
             </motion.div>
           </div>
         )}
+      </div>
+      </main>
       </div>
     </div>
   );

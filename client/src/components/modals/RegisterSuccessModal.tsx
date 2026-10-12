@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, Copy, ArrowRight, ShieldCheck, Clock, FileText, Mail } from 'lucide-react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { CheckCircle2, Copy, ArrowRight, ShieldCheck, Clock, FileText } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { Team } from '../../types/index.js';
 import { useNavigate } from 'react-router-dom';
@@ -17,21 +17,22 @@ export const RegisterSuccessModal: React.FC<RegisterSuccessModalProps> = ({
   onClose,
 }) => {
   const navigate = useNavigate();
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && !reduceMotion) {
       try {
         confetti({
           particleCount: 120,
           spread: 80,
           origin: { y: 0.6 },
-          colors: ['#00f2fe', '#f472b6', '#38bdf8', '#10b981'],
+          colors: ['#77e7ed', '#a78bfa', '#8b5cf6', '#10b981'],
         });
-      } catch (e) {
+      } catch {
         // Safe fallback
       }
     }
-  }, [isOpen]);
+  }, [isOpen, reduceMotion]);
 
   if (!isOpen || !team) return null;
 
@@ -54,19 +55,21 @@ export const RegisterSuccessModal: React.FC<RegisterSuccessModalProps> = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          transition={{ duration: reduceMotion ? 0 : 0.24 }}
           className="fixed inset-0 bg-black/85 backdrop-blur-md"
         />
 
         <motion.div
-          initial={{ opacity: 0, scale: 0.9, y: 20 }}
+          initial={{ opacity: 0, scale: reduceMotion ? 1 : 0.9, y: reduceMotion ? 0 : 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
+          transition={{ duration: reduceMotion ? 0 : 0.3, ease: 'easeOut' }}
           className="relative w-full max-w-lg rounded-2xl border border-cyan-500/40 bg-[#0d1117] p-6 sm:p-8 shadow-[0_0_60px_rgba(0,242,254,0.25)] z-10 text-center"
         >
           {/* Top border glow */}
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-400 via-pink-400 to-indigo-500" />
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-400 via-violet-400 to-indigo-500" />
 
-          <div className="mx-auto w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mb-4 text-emerald-400">
+          <div className={`registration-success-mark mx-auto w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mb-4 text-emerald-400 ${reduceMotion ? 'motion-reduce' : ''}`}>
             <CheckCircle2 className="w-8 h-8" />
           </div>
 
@@ -79,7 +82,7 @@ export const RegisterSuccessModal: React.FC<RegisterSuccessModalProps> = ({
 
           <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold uppercase border bg-amber-500/10 text-amber-300 border-amber-500/30">
             <Clock className="w-3.5 h-3.5 text-amber-400" />
-            <span>Status: Pending Organizer Review</span>
+            <span>Status: {team.status.replaceAll('_', ' ')}</span>
           </div>
 
           {/* Details Card */}

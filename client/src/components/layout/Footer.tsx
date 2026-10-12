@@ -3,6 +3,8 @@ import { Link, useLocation } from 'react-router-dom';
 import { Mail, Phone, MapPin, ArrowUp } from 'lucide-react';
 import { HACKATHON_CONFIG } from '../../hackathon.config.js';
 
+const COPYRIGHT_YEAR = new Date().getFullYear();
+
 export const Footer: React.FC = () => {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
@@ -10,6 +12,17 @@ export const Footer: React.FC = () => {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  if (isAdminRoute) {
+    return (
+      <footer className="admin-footer">
+        <div className="admin-footer__inner">
+          <span>© {COPYRIGHT_YEAR} ZETATHON · Organizer workspace</span>
+          <Link to="/">Return to the public event site</Link>
+        </div>
+      </footer>
+    );
+  }
 
   return (
     <footer className={`relative pt-16 pb-12 overflow-hidden z-20 ${
@@ -223,7 +236,7 @@ export const Footer: React.FC = () => {
         <div className={`pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs ${
           isAdminRoute ? 'text-slate-500' : 'text-slate-500'
         }`}>
-          <p>© {new Date().getFullYear()} ZETATHON. Crafted with passion by ZETA Student Club. All rights reserved.</p>
+          <p>© {COPYRIGHT_YEAR} ZETATHON. Crafted with passion by ZETA Student Club. All rights reserved.</p>
 
           <div className="flex items-center gap-6">
             <a href="#rules" className={`transition-colors ${isAdminRoute ? 'hover:text-slate-700' : 'hover:text-slate-300'}`}>Code of Conduct</a>

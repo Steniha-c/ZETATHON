@@ -104,3 +104,15 @@
 .bg-radial-glow {
   background: radial-gradient(circle at 50% 0%, rgba(0, 242, 254, 0.12) 0%, rgba(121, 40, 202, 0.06) 45%, transparent 70%);
 }
+
+
+/* Registration state polish: purely presentational; request and success logic remain unchanged. */
+.registration-submit { position:relative; isolation:isolate; overflow:hidden; }
+.registration-submit.is-submitting::after { content:''; position:absolute; z-index:0; top:-50%; bottom:-50%; left:-45%; width:28%; pointer-events:none; transform:skewX(-22deg); background:linear-gradient(90deg,transparent,rgba(255,255,255,.34),transparent); animation:submit-shimmer 1.6s ease-in-out infinite; }
+.registration-submit.is-submitting>* { position:relative; z-index:1; }
+.registration-success-mark { animation:success-pop .62s cubic-bezier(.2,.9,.25,1.2) both; }
+@keyframes submit-shimmer { 0% { left:-45%; opacity:0; } 25% { opacity:.8; } 75% { opacity:.45; } 100% { left:125%; opacity:0; } }
+@keyframes success-pop { 0% { transform:scale(.72) rotate(-8deg); opacity:0; } 68% { transform:scale(1.08) rotate(2deg); opacity:1; } 100% { transform:scale(1) rotate(0); opacity:1; } }
+@media (prefers-reduced-motion: reduce) {
+  .registration-submit.is-submitting::after,.registration-success-mark,.registration-submit .animate-spin { animation:none!important; }
+}

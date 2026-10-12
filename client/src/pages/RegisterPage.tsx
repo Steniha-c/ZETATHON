@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   Users, UserPlus, Trash2, ArrowRight, AlertCircle, Shield,
-  Terminal, Sparkles, CheckCircle2, ChevronLeft, RefreshCw,
-  Upload, FileText, X, Check, Eye, Edit2, ShieldAlert
+  Terminal, Sparkles, ChevronLeft, RefreshCw,
+  Upload, FileText, X, Eye, Edit2
 } from 'lucide-react';
 import { HACKATHON_CONFIG } from '../hackathon.config.js';
 import { api } from '../services/api.js';
@@ -49,8 +49,8 @@ export const RegisterPage: React.FC = () => {
   const [college, setCollege] = useState('Dhanalakshmi College of Engineering');
   const [department, setDepartment] = useState('CSE');
   const [year, setYear] = useState('3rd Year');
-  const [githubUrl, setGithubUrl] = useState('');
-  const [linkedinUrl, setLinkedinUrl] = useState('');
+  const [githubUrl] = useState('');
+  const [linkedinUrl] = useState('');
 
   // Additional Team Members (1 to 3 members -> 2 to 4 members total)
   const [members, setMembers] = useState<MemberField[]>([
@@ -253,8 +253,33 @@ export const RegisterPage: React.FC = () => {
   const selectedChallengeObj = HACKATHON_CONFIG.challenges.find(c => c.id === challengeId || c.code === challengeId);
 
   return (
-    <div className="min-h-screen pt-28 pb-20 px-4 sm:px-6 lg:px-8 relative z-10">
-      <div className="max-w-3xl mx-auto">
+    <div className="min-h-screen pt-28 pb-20 px-4 sm:px-6 lg:px-8 relative z-10 registration-page">
+      <div className="registration-atmosphere" aria-hidden="true" />
+      <div className="registration-layout max-w-[1540px] mx-auto">
+        <aside className="registration-story" aria-label="ZETATHON registration overview">
+          <div className="registration-story__brand">
+            <img src="/zeta-logo.jpg" alt="" />
+            <div>
+              <strong>ZETATHON</strong>
+              <small>ZETA • MONARCH LEVEL</small>
+            </div>
+          </div>
+          <div className="registration-story__content">
+            <span className="registration-story__kicker">Team entry · 2026</span>
+            <h2>Ideas take shape at the <span>edge of possibility.</span></h2>
+            <p className="registration-story__copy">
+              Bring your crew, choose your direction, and submit the presentation that introduces your idea to the ZETATHON organizers.
+            </p>
+            <div className="registration-story__facts">
+              <div><strong>{HACKATHON_CONFIG.stats.hours}h</strong><span>Innovation sprint</span></div>
+              <div><strong>2–4</strong><span>People per team</span></div>
+              <div><strong>PPT / PPTX / PDF</strong><span>Idea deck</span></div>
+            </div>
+            <p className="registration-story__foot">Registration → organizer review → next-stage decisions</p>
+          </div>
+        </aside>
+        <div className="registration-form-column">
+        <div className="max-w-3xl mx-auto">
         <Link
           to="/"
           className="inline-flex items-center gap-1.5 text-xs font-mono uppercase font-bold text-slate-400 hover:text-cyan-400 transition-colors mb-6 cursor-pointer"
@@ -288,15 +313,16 @@ export const RegisterPage: React.FC = () => {
           </p>
 
           {/* Progress Indicator */}
-          <div className="flex items-center justify-center gap-2 pt-2">
+          <div className="flex items-center justify-center gap-2 pt-2" role="progressbar" aria-label="Registration steps" aria-valuemin={1} aria-valuemax={2} aria-valuenow={step === 'form' ? 1 : 2}>
             <span className={`w-8 h-1 rounded-full ${step === 'form' ? 'bg-cyan-400' : 'bg-cyan-400/40'}`} />
             <span className={`w-8 h-1 rounded-full ${step === 'review' ? 'bg-cyan-400' : 'bg-slate-700'}`} />
+            <span className="text-[10px] text-slate-500 font-mono uppercase tracking-wider ml-1">{step === 'form' ? 'Details · 1/2' : 'Review · 2/2'}</span>
           </div>
         </div>
 
         {/* Global Error Banner */}
         {formError && (
-          <div className="mb-6 p-4 rounded-xl border border-rose-500/40 bg-rose-950/30 text-rose-300 text-xs flex items-center gap-2.5">
+          <div role="alert" className="mb-6 p-4 rounded-xl border border-rose-500/40 bg-rose-950/30 text-rose-300 text-xs flex items-center gap-2.5">
             <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
             <span className="font-semibold">{formError}</span>
           </div>
@@ -306,7 +332,7 @@ export const RegisterPage: React.FC = () => {
         {step === 'form' && (
           <form onSubmit={handleFormDirectSubmit} className="space-y-8">
             {/* SECTION 1: TEAM INFORMATION */}
-            <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-6 sm:p-8 backdrop-blur-xl shadow-xl space-y-6">
+            <div className="registration-card rounded-2xl border border-white/10 bg-slate-900/60 p-6 sm:p-8 backdrop-blur-xl shadow-xl space-y-6">
               <div className="flex items-center justify-between pb-4 border-b border-white/5">
                 <div className="flex items-center gap-2.5 text-cyan-400">
                   <Terminal className="w-5 h-5" />
@@ -353,7 +379,7 @@ export const RegisterPage: React.FC = () => {
             </div>
 
             {/* SECTION 2: TEAM LEADER (PRIMARY CONTACT) */}
-            <div className="rounded-2xl border border-cyan-500/30 bg-slate-900/60 p-6 sm:p-8 backdrop-blur-xl shadow-xl space-y-6">
+            <div className="registration-card rounded-2xl border border-cyan-500/30 bg-slate-900/60 p-6 sm:p-8 backdrop-blur-xl shadow-xl space-y-6">
               <div className="flex items-center justify-between pb-4 border-b border-cyan-500/20">
                 <div className="flex items-center gap-2.5 text-cyan-400">
                   <Shield className="w-5 h-5 text-cyan-400" />
@@ -461,7 +487,7 @@ export const RegisterPage: React.FC = () => {
             </div>
 
             {/* SECTION 3: ADDITIONAL TEAM MEMBERS */}
-            <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-6 sm:p-8 backdrop-blur-xl shadow-xl space-y-6">
+            <div className="registration-card rounded-2xl border border-white/10 bg-slate-900/60 p-6 sm:p-8 backdrop-blur-xl shadow-xl space-y-6">
               <div className="flex items-center justify-between pb-4 border-b border-white/5">
                 <div className="flex items-center gap-2.5 text-cyan-400">
                   <Users className="w-5 h-5" />
@@ -601,12 +627,12 @@ export const RegisterPage: React.FC = () => {
             </div>
 
             {/* SECTION 4: PROJECT PPT UPLOAD */}
-            <div className="rounded-2xl border border-pink-500/30 bg-slate-900/60 p-6 sm:p-8 backdrop-blur-xl shadow-xl space-y-6">
+            <div className="registration-card rounded-2xl border border-pink-500/30 bg-slate-900/60 p-6 sm:p-8 backdrop-blur-xl shadow-xl space-y-6">
               <div className="flex items-center justify-between pb-4 border-b border-pink-500/20">
                 <div className="flex items-center gap-2.5 text-pink-400">
                   <FileText className="w-5 h-5 text-pink-400" />
                   <h2 className="text-base sm:text-lg font-bold font-mono text-white uppercase tracking-wider">
-                    4. Project Presentation Deck (PPT / PDF)
+                    4. Project Presentation Deck (PPT / PPTX / PDF)
                   </h2>
                 </div>
                 <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-pink-500/20 text-pink-300 border border-pink-500/40 uppercase">
@@ -619,20 +645,20 @@ export const RegisterPage: React.FC = () => {
               </p>
 
               {fileError && (
-                <div className="p-3 rounded-lg border border-rose-500/40 bg-rose-950/30 text-rose-300 text-xs flex items-center gap-2">
+                  <div role="alert" className="p-3 rounded-lg border border-rose-500/40 bg-rose-950/30 text-rose-300 text-xs flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
                   <span>{fileError}</span>
                 </div>
               )}
 
               {!pptFile ? (
-                <label className="border-2 border-dashed border-pink-500/40 hover:border-pink-400 bg-pink-950/10 hover:bg-pink-950/20 rounded-2xl p-8 flex flex-col items-center justify-center gap-3 cursor-pointer transition-all group">
+                <label className="registration-upload border-2 border-dashed border-pink-500/40 hover:border-pink-400 bg-pink-950/10 hover:bg-pink-950/20 rounded-2xl p-8 flex flex-col items-center justify-center gap-3 cursor-pointer transition-all group">
                   <div className="w-12 h-12 rounded-2xl bg-pink-500/10 border border-pink-500/30 flex items-center justify-center text-pink-400 group-hover:scale-110 transition-transform">
                     <Upload className="w-6 h-6" />
                   </div>
                   <div className="text-center">
                     <p className="text-xs font-mono font-bold text-white uppercase tracking-wider">
-                      Click to choose or drag presentation deck here
+                      Choose your presentation deck
                     </p>
                     <p className="text-[11px] text-slate-400 font-sans mt-1">
                       PDF, PPTX, or PPT (Max 25 MB)
@@ -684,7 +710,8 @@ export const RegisterPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full sm:w-auto px-8 py-3.5 rounded-xl font-mono text-xs font-black uppercase tracking-wider text-black bg-cyan-400 hover:bg-cyan-300 transition-all shadow-[0_0_25px_rgba(0,242,254,0.4)] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+                aria-busy={isSubmitting}
+                className={`registration-submit w-full sm:w-auto px-8 py-3.5 rounded-xl font-mono text-xs font-black uppercase tracking-wider text-black bg-cyan-400 hover:bg-cyan-300 transition-all shadow-[0_0_25px_rgba(0,242,254,0.4)] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer ${isSubmitting ? 'is-submitting' : ''}`}
               >
                 {isSubmitting ? (
                   <>
@@ -707,7 +734,7 @@ export const RegisterPage: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            className="rounded-2xl border border-white/10 bg-slate-900/80 p-6 sm:p-8 backdrop-blur-xl shadow-2xl space-y-6"
+            className="registration-card rounded-2xl border border-white/10 bg-slate-900/80 p-6 sm:p-8 backdrop-blur-xl shadow-2xl space-y-6"
           >
             <div className="flex items-center justify-between pb-4 border-b border-white/10">
               <div className="flex items-center gap-2.5 text-cyan-400">
@@ -809,7 +836,8 @@ export const RegisterPage: React.FC = () => {
                 type="button"
                 disabled={isSubmitting}
                 onClick={handleFinalSubmit}
-                className="flex-1 py-3.5 px-6 rounded-xl font-mono text-xs font-black uppercase tracking-wider text-black bg-cyan-400 hover:bg-cyan-300 transition-all shadow-[0_0_25px_rgba(0,242,254,0.4)] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+                aria-busy={isSubmitting}
+                className={`registration-submit flex-1 py-3.5 px-6 rounded-xl font-mono text-xs font-black uppercase tracking-wider text-black bg-cyan-400 hover:bg-cyan-300 transition-all shadow-[0_0_25px_rgba(0,242,254,0.4)] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer ${isSubmitting ? 'is-submitting' : ''}`}
               >
                 {isSubmitting ? (
                   <>
@@ -833,6 +861,8 @@ export const RegisterPage: React.FC = () => {
           team={registeredTeam}
           onClose={() => setShowSuccessModal(false)}
         />
+      </div>
+        </div>
       </div>
     </div>
   );
