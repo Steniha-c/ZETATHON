@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform, type Variants } from 'framer-motion';
+import { AnimatePresence, motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform, type Variants } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
   ArrowDown, ArrowRight, ArrowUpRight, CalendarDays, Check, ChevronDown,
@@ -84,8 +84,14 @@ export const HomePage: React.FC = () => {
   const reduceMotion = useReducedMotion();
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
-  const gridParallax = useTransform(scrollYProgress, [0, 1], [0, 54]);
-  const orbParallax = useTransform(scrollYProgress, [0, 1], [0, 25]);
+  const heroPointerX = useMotionValue(0);
+  const heroPointerY = useMotionValue(0);
+  const springPointerX = useSpring(heroPointerX, { stiffness: 42, damping: 18, mass: 0.8 });
+  const springPointerY = useSpring(heroPointerY, { stiffness: 42, damping: 18, mass: 0.8 });
+  const scenePointerX = useTransform(springPointerX, [-0.5, 0.5], [14, -14]);
+  const scenePointerY = useTransform(springPointerY, [-0.5, 0.5], [10, -10]);
+  const sceneScrollY = useTransform(scrollYProgress, [0, 1], [0, 42]);
+  const sceneY = useTransform(() => scenePointerY.get() + sceneScrollY.get());
 
   useEffect(() => {
     let active = true;
@@ -135,6 +141,17 @@ export const HomePage: React.FC = () => {
     setMobileMenuOpen(false);
     document.getElementById(id)?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
   };
+  const handleHeroPointerMove = (event: React.PointerEvent<HTMLElement>) => {
+    if (reduceMotion || event.pointerType !== 'mouse' || window.innerWidth < 768) return;
+    const bounds = heroRef.current?.getBoundingClientRect();
+    if (!bounds) return;
+    heroPointerX.set((event.clientX - bounds.left) / bounds.width - 0.5);
+    heroPointerY.set((event.clientY - bounds.top) / bounds.height - 0.5);
+  };
+  const resetHeroPointer = () => {
+    heroPointerX.set(0);
+    heroPointerY.set(0);
+  };
 
   return (
     <div className="site-home">
@@ -159,9 +176,38 @@ export const HomePage: React.FC = () => {
       </header>
 
       <main>
-        <motion.section id="hero" ref={heroRef} className="hero-stage">
-          <motion.div className="hero-grid-drift" style={{ y: reduceMotion ? 0 : gridParallax }} aria-hidden="true"><div className="hero-grid" /></motion.div>
-          <motion.div className="hero-orb-drift" style={{ y: reduceMotion ? 0 : orbParallax }} aria-hidden="true"><div className="hero-orb hero-orb-violet" /><div className="hero-orb hero-orb-cyan" /></motion.div>
+        <motion.section id="hero" ref={heroRef} className="hero-stage" onPointerMove={handleHeroPointerMove} onPointerLeave={resetHeroPointer}>
+          <motion.div className="hero-scene-motion" style={{ x: reduceMotion ? 0 : scenePointerX, y: reduceMotion ? 0 : sceneY }} aria-hidden="true">
+            <div className="hero-scene">
+              <div className="hero-scene-image" />
+              <div className="hero-scene-vignette" />
+              <svg className="hero-light-trails" viewBox="0 0 1440 900" preserveAspectRatio="none">
+                <defs><linearGradient id="arena-trail" x1="0" x2="1"><stop offset="0" stopColor="#8b5cff" stopOpacity="0" /><stop offset=".48" stopColor="#a58cff" stopOpacity=".85" /><stop offset="1" stopColor="#54e8ff" stopOpacity="0" /></linearGradient></defs>
+                <path className="hero-light-trail hero-light-trail--one" d="M500 735 C690 665 735 765 910 676 S1190 604 1430 650" stroke="url(#arena-trail)" />
+                <path className="hero-light-trail hero-light-trail--two" d="M690 308 C820 365 888 255 1000 302 S1240 384 1440 278" stroke="url(#arena-trail)" />
+                <path className="hero-light-trail hero-light-trail--three" d="M640 540 C792 490 820 560 965 513 S1195 460 1420 510" stroke="url(#arena-trail)" />
+              </svg>
+              <div className="hero-z-lockup">
+                <svg className="hero-z-mark" viewBox="0 0 360 400" role="img" aria-label="Glowing angular Z emblem">
+                  <defs>
+                    <linearGradient id="portal-spectrum" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#b38aff" /><stop offset=".48" stopColor="#f2e8ff" /><stop offset="1" stopColor="#55ecff" /></linearGradient>
+                    <filter id="portal-glow" x="-70%" y="-70%" width="240%" height="240%"><feGaussianBlur stdDeviation="7" result="blur" /><feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+                  </defs>
+                  <path className="portal-frame portal-frame--outer" d="M180 18 284 78 323 184 267 293 180 374 93 293 37 184 76 78Z" />
+                  <path className="portal-frame portal-frame--inner" d="M180 49 258 94 287 184 242 269 180 326 118 269 73 184 102 94Z" />
+                  <path className="hero-z-stroke hero-z-stroke--halo" d="M104 128H257L103 277H256" />
+                  <path className="hero-z-stroke hero-z-stroke--core" d="M104 128H257L103 277H256" />
+                  <path className="portal-crosslight" d="M58 184H88M272 184H302" />
+                </svg>
+              </div>
+              <span className="hero-fragment hero-fragment--one" />
+              <span className="hero-fragment hero-fragment--two" />
+              <span className="hero-fragment hero-fragment--three" />
+              <span className="hero-fragment hero-fragment--four" />
+              <span className="hero-fragment hero-fragment--five" />
+              <span className="hero-fragment hero-fragment--six" />
+            </div>
+          </motion.div>
           <div className="hero-particles" aria-hidden="true">{heroParticles.map((particle, index) => <span key={index} className="hero-particle" style={{ left: particle.x, top: particle.y, animationDelay: particle.delay, animationDuration: particle.duration }} />)}</div>
           <div className="hero-coordinate" aria-hidden="true">13°02′ N<br />80°11′ E</div>
           <div className="hero-content">
@@ -206,6 +252,17 @@ export const HomePage: React.FC = () => {
               <motion.button className="text-link" variants={reveal} onClick={() => scrollTo('format')}>See how the challenge works <ArrowRight size={15} /></motion.button>
             </motion.div>
           </motion.div>
+          <motion.figure className="about-scene-panel" variants={reveal}>
+            <img src="/images/zetathon-about.webp" alt="" loading="lazy" decoding="async" />
+            <div className="about-scene-scrim" aria-hidden="true" />
+            <figcaption className="about-scene-caption">
+              <span className="about-scene-kicker">THE WORKING FLOOR</span>
+              <strong>Make the idea<br />real.</strong>
+              <span className="about-scene-note">A focused space to think, build, and take your team’s idea further.</span>
+            </figcaption>
+            <div className="about-scene-meta"><strong>{duration}</strong><span>ONE SHARED BUILD</span></div>
+            <span className="about-scene-index" aria-hidden="true">Z / ARENA</span>
+          </motion.figure>
           <motion.div className="about-stats" variants={sectionCascade}>
             <motion.div className="stat-feature" variants={reveal}><strong>{config.stats.hours}<small>H</small></strong><span>one focused build sprint</span></motion.div>
             <motion.div variants={reveal}><span className="stat-number">02</span><b>rounds</b><small>from the first idea to the build</small></motion.div>
