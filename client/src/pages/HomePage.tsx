@@ -218,7 +218,7 @@ export const HomePage: React.FC = () => {
               <span className="eyebrow-line" /> {config.heroBadge} <span className="eyebrow-line" />
             </motion.div>
             <motion.h1 initial={reduceMotion ? false : 'hidden'} animate="visible" variants={heroTitleCascade}>
-              <motion.span className="hero-wordmark" variants={heroTitleReveal}>ZETA<span>THON</span></motion.span>
+              <motion.span className="hero-wordmark" data-glitch="ZETATHON" aria-label="ZETATHON" variants={heroTitleReveal}>ZETA<span>THON</span></motion.span>
               <motion.span className="hero-headline" variants={heroTitleCascade}>
                 <span className="hero-title-line"><motion.span className="hero-title-word" variants={heroTitleReveal}>BUILD</motion.span>{' '}<motion.span className="hero-title-word" variants={heroTitleReveal}>THE</motion.span>{' '}<motion.span className="hero-title-word" variants={heroTitleReveal}>FUTURE.</motion.span></span>
                 <span className="hero-title-line"><motion.span className="hero-title-word" variants={heroTitleReveal}><em>BREAK</em></motion.span>{' '}<motion.span className="hero-title-word" variants={heroTitleReveal}><em>THE</em></motion.span>{' '}<motion.span className="hero-title-word" variants={heroTitleReveal}><em>LIMITS.</em></motion.span></span>
