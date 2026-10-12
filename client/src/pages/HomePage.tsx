@@ -26,7 +26,7 @@ const heroTitleCascade: Variants = {
 };
 const heroTitleReveal: Variants = {
   hidden: { opacity: 0, y: 26, filter: 'blur(8px)', scale: 0.985 },
-  visible: { opacity: 1, y: 0, filter: 'blur(0px)', scale: 1, transition: { duration: 0.78, ease: 'easeOut' } },
+  visible: { opacity: 1, y: 0, filter: 'blur(0px)', scale: 1, transition: { duration: 0.55, ease: 'easeOut' } },
 };
 
 const heroParticles = [
@@ -173,16 +173,19 @@ export const HomePage: React.FC = () => {
             </motion.div>
             <motion.h1 initial={reduceMotion ? false : 'hidden'} animate="visible" variants={heroTitleCascade}>
               <motion.span className="hero-wordmark" variants={heroTitleReveal}>ZETA<span>THON</span></motion.span>
-              <span className="hero-headline"><motion.span className="hero-title-line" variants={heroTitleReveal}>BUILD THE FUTURE.</motion.span><motion.span className="hero-title-line" variants={heroTitleReveal}><em>BREAK THE LIMITS.</em></motion.span></span>
+              <motion.span className="hero-headline" variants={heroTitleCascade}>
+                <span className="hero-title-line"><motion.span className="hero-title-word" variants={heroTitleReveal}>BUILD</motion.span>{' '}<motion.span className="hero-title-word" variants={heroTitleReveal}>THE</motion.span>{' '}<motion.span className="hero-title-word" variants={heroTitleReveal}>FUTURE.</motion.span></span>
+                <span className="hero-title-line"><motion.span className="hero-title-word" variants={heroTitleReveal}><em>BREAK</em></motion.span>{' '}<motion.span className="hero-title-word" variants={heroTitleReveal}><em>THE</em></motion.span>{' '}<motion.span className="hero-title-word" variants={heroTitleReveal}><em>LIMITS.</em></motion.span></span>
+              </motion.span>
             </motion.h1>
-            <motion.p className="hero-description" initial={reduceMotion ? false : { opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduceMotion ? 0 : 0.65, delay: reduceMotion ? 0 : 0.52 }}>
+            <motion.p className="hero-description" initial={reduceMotion ? false : { opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduceMotion ? 0 : 0.55, delay: reduceMotion ? 0 : 1.45 }}>
               Eight hours. One team. A real problem worth solving. Join student builders turning bold ideas into working prototypes.
             </motion.p>
-            <motion.div className="hero-actions" initial={reduceMotion ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduceMotion ? 0 : 0.58, delay: reduceMotion ? 0 : 0.68 }}>
+            <motion.div className="hero-actions" initial={reduceMotion ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduceMotion ? 0 : 0.58, delay: reduceMotion ? 0 : 1.67 }}>
               <Link to="/register" className="button-primary">Register your team <ArrowRight size={17} /></Link>
               <button className="button-quiet" onClick={() => scrollTo('about')}>Explore the event <ArrowDown size={16} /></button>
             </motion.div>
-            <motion.div className="hero-facts" aria-label="Event information" initial={reduceMotion ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduceMotion ? 0 : 0.6, delay: reduceMotion ? 0 : 0.82 }}>
+            <motion.div className="hero-facts" aria-label="Event information" initial={reduceMotion ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduceMotion ? 0 : 0.6, delay: reduceMotion ? 0 : 1.88 }}>
               <div><CalendarDays size={16} /><span><small>EVENT DATE</small><b>{dateLabel || 'To be announced'}</b></span></div>
               <div><Clock3 size={16} /><span><small>THE CHALLENGE</small><b>{duration}</b></span></div>
               <div><MapPin size={16} /><span><small>VENUE</small><b>{config.dates.venue || 'To be announced'}</b></span></div>
