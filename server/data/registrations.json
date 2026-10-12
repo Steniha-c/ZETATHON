@@ -1,0 +1,354 @@
+[
+  {
+    "id": "team-1791561018659-b8d6f7",
+    "registrationId": "ZETA-2026-8VWR",
+    "name": "SYNAPSE",
+    "teamCode": "ZETA-SYNA-1041",
+    "teamSize": 2,
+    "leaderId": "usr-lead-1791561018659",
+    "leaderName": "STENIHA C",
+    "leaderEmail": "stenihasteniha@gmail.com",
+    "phone": "6385365926",
+    "department": "Computer Science & Engineering",
+    "year": "3rd Year",
+    "college": "Dhanalakshmi College of Engineering",
+    "challengeId": "open-innovation",
+    "challengeCode": "OPEN-INNOVATION",
+    "challengeTitle": "Open Innovation Track",
+    "members": [
+      {
+        "id": "mem-1791561018659-1",
+        "name": "sonali",
+        "email": "sonalilogith@gmail.com",
+        "phone": "9445535926",
+        "college": "Dhanalakshmi College of Engineering",
+        "department": "Computer Science & Engineering",
+        "year": "3rd Year",
+        "role": "Member"
+      }
+    ],
+    "pptFile": {
+      "fileId": "ppt-2a9d5cec-0010-4f6f-a16f-87bd03adaa3c.pptx",
+      "originalName": "SmogSnitch_Team_Synapse.pptx",
+      "mimeType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      "sizeBytes": 331839,
+      "uploadedAt": "2026-10-09T15:49:56.525Z",
+      "storedPath": "C:\\Users\\steni\\OneDrive\\Desktop\\ZETATHON\\server\\data\\uploads\\ppt-2a9d5cec-0010-4f6f-a16f-87bd03adaa3c.pptx"
+    },
+    "status": "shortlisted",
+    "auditLog": [
+      {
+        "id": "aud-1791777092854-cf8g",
+        "timestamp": "2026-10-12T03:51:32.854Z",
+        "changedBy": "usr-admin-zeta-ecell",
+        "previousStatus": "not_shortlisted",
+        "newStatus": "shortlisted"
+      },
+      {
+        "id": "aud-1791777074333-s4ld",
+        "timestamp": "2026-10-12T03:51:14.333Z",
+        "changedBy": "organizer",
+        "previousStatus": "waitlisted",
+        "newStatus": "not_shortlisted"
+      },
+      {
+        "id": "aud-1791777070704-ld98",
+        "timestamp": "2026-10-12T03:51:10.704Z",
+        "changedBy": "organizer",
+        "previousStatus": "shortlisted",
+        "newStatus": "waitlisted"
+      },
+      {
+        "id": "aud-1791561377045-8j5w",
+        "timestamp": "2026-10-09T15:56:17.045Z",
+        "changedBy": "usr-admin-zeta-ecell",
+        "previousStatus": "pending_approval",
+        "newStatus": "shortlisted"
+      },
+      {
+        "id": "aud-1791561018897-init",
+        "timestamp": "2026-10-09T15:50:18.897Z",
+        "changedBy": "system",
+        "previousStatus": "pending_verification",
+        "newStatus": "pending_approval",
+        "reason": "Team verified email address via OTP. Entered organizer review queue."
+      }
+    ],
+    "emailVerified": true,
+    "verifiedAt": "2026-10-09T15:50:18.897Z",
+    "createdAt": "2026-10-09T15:50:18.897Z",
+    "updatedAt": "2026-10-12T03:51:32.854Z",
+    "approvedAt": "2026-10-12T03:51:32.854Z",
+    "approvedBy": "usr-admin-zeta-ecell",
+    "emailStatus": {
+      "registrationEmail": {
+        "status": "sent",
+        "sentAt": "2026-10-09T15:50:18.897Z"
+      },
+      "selectionEmail": {
+        "status": "not_sent"
+      }
+    }
+  },
+  {
+    "id": "team-1791649216518-ecbd8b",
+    "registrationId": "ZETA-2026-BB8E",
+    "name": "QuantumForge_mv2lon0e",
+    "teamCode": "ZETA-QUAN-9050",
+    "teamSize": 2,
+    "leaderId": "usr-lead-1791649216522",
+    "leaderName": "John Matrix",
+    "leaderEmail": "leader_mv2lon0e@dce.ac.in",
+    "phone": "9876543210",
+    "department": "Computer Science & Engineering",
+    "year": "3rd Year",
+    "college": "Dronacharya College of Engineering",
+    "challengeId": "open-innovation",
+    "challengeCode": "OPEN-INNOVATION",
+    "challengeTitle": "Open Innovation Track",
+    "members": [
+      {
+        "id": "mem-1791649216522-1",
+        "name": "Sarah Connor",
+        "email": "member_mv2lon0e@dce.ac.in",
+        "phone": "9876543211",
+        "college": "Dronacharya College of Engineering",
+        "department": "Computer Science & Engineering",
+        "year": "3rd Year",
+        "role": "Member"
+      }
+    ],
+    "pptFile": {
+      "fileId": "ppt-ea39f26c-d2c8-4032-8023-1b9bc1c2420e.pdf",
+      "originalName": "QuantumForge_Pitch.pdf",
+      "mimeType": "application/pdf",
+      "sizeBytes": 52,
+      "uploadedAt": "2026-10-10T16:20:16.515Z",
+      "storedPath": "C:\\Users\\steni\\OneDrive\\Desktop\\ZETATHON\\server\\data\\uploads\\ppt-ea39f26c-d2c8-4032-8023-1b9bc1c2420e.pdf"
+    },
+    "status": "not_shortlisted",
+    "auditLog": [
+      {
+        "id": "aud-1791649217861-nswu",
+        "timestamp": "2026-10-10T16:20:17.861Z",
+        "changedBy": "organizer",
+        "previousStatus": "waitlisted",
+        "newStatus": "not_shortlisted",
+        "reason": "Evaluated for round 1."
+      },
+      {
+        "id": "aud-1791649217850-17va",
+        "timestamp": "2026-10-10T16:20:17.850Z",
+        "changedBy": "organizer",
+        "previousStatus": "shortlisted",
+        "newStatus": "waitlisted",
+        "reason": "Placed in reserve pool."
+      },
+      {
+        "id": "aud-1791649217816-pu3y",
+        "timestamp": "2026-10-10T16:20:17.816Z",
+        "changedBy": "usr-admin-zeta-ecell",
+        "previousStatus": "pending_approval",
+        "newStatus": "shortlisted"
+      },
+      {
+        "id": "aud-1791649216757-init",
+        "timestamp": "2026-10-10T16:20:16.757Z",
+        "changedBy": "system",
+        "previousStatus": "pending",
+        "newStatus": "pending_approval",
+        "reason": "Team registered directly. Entered organizer review queue."
+      }
+    ],
+    "emailVerified": true,
+    "verifiedAt": "2026-10-10T16:20:16.758Z",
+    "createdAt": "2026-10-10T16:20:16.758Z",
+    "updatedAt": "2026-10-10T16:20:17.861Z",
+    "emailStatus": {
+      "registrationEmail": {
+        "status": "sent",
+        "sentAt": "2026-10-10T16:20:16.758Z"
+      },
+      "selectionEmail": {
+        "status": "not_sent"
+      }
+    },
+    "approvedAt": "2026-10-10T16:20:17.816Z",
+    "approvedBy": "usr-admin-zeta-ecell",
+    "rejectionReason": "Evaluated for round 1."
+  },
+  {
+    "id": "team-1791650250593-6aa9ae",
+    "registrationId": "ZETA-2026-6NPH",
+    "name": "QuantumForge_mv2masyj",
+    "teamCode": "ZETA-QUAN-6933",
+    "teamSize": 2,
+    "leaderId": "usr-lead-1791650250593",
+    "leaderName": "John Matrix",
+    "leaderEmail": "leader_mv2masyj@dce.ac.in",
+    "phone": "9876543210",
+    "department": "Computer Science & Engineering",
+    "year": "3rd Year",
+    "college": "Dronacharya College of Engineering",
+    "challengeId": "open-innovation",
+    "challengeCode": "OPEN-INNOVATION",
+    "challengeTitle": "Open Innovation Track",
+    "members": [
+      {
+        "id": "mem-1791650250593-1",
+        "name": "Sarah Connor",
+        "email": "member_mv2masyj@dce.ac.in",
+        "phone": "9876543211",
+        "college": "Dronacharya College of Engineering",
+        "department": "Computer Science & Engineering",
+        "year": "3rd Year",
+        "role": "Member"
+      }
+    ],
+    "pptFile": {
+      "fileId": "ppt-cf32680a-be3f-4a3f-8490-6c1f5e7f8f76.pdf",
+      "originalName": "QuantumForge_Pitch.pdf",
+      "mimeType": "application/pdf",
+      "sizeBytes": 52,
+      "uploadedAt": "2026-10-10T16:37:30.592Z",
+      "storedPath": "C:\\Users\\steni\\OneDrive\\Desktop\\ZETATHON\\server\\data\\uploads\\ppt-cf32680a-be3f-4a3f-8490-6c1f5e7f8f76.pdf"
+    },
+    "status": "not_shortlisted",
+    "auditLog": [
+      {
+        "id": "aud-1791650250821-mdim",
+        "timestamp": "2026-10-10T16:37:30.821Z",
+        "changedBy": "organizer",
+        "previousStatus": "waitlisted",
+        "newStatus": "not_shortlisted",
+        "reason": "Evaluated for round 1."
+      },
+      {
+        "id": "aud-1791650250817-jk7r",
+        "timestamp": "2026-10-10T16:37:30.817Z",
+        "changedBy": "organizer",
+        "previousStatus": "shortlisted",
+        "newStatus": "waitlisted",
+        "reason": "Placed in reserve pool."
+      },
+      {
+        "id": "aud-1791650250793-7kiz",
+        "timestamp": "2026-10-10T16:37:30.793Z",
+        "changedBy": "usr-admin-zeta-ecell",
+        "previousStatus": "pending_approval",
+        "newStatus": "shortlisted"
+      },
+      {
+        "id": "aud-1791650250660-init",
+        "timestamp": "2026-10-10T16:37:30.660Z",
+        "changedBy": "system",
+        "previousStatus": "pending",
+        "newStatus": "pending_approval",
+        "reason": "Team registered directly. Entered organizer review queue."
+      }
+    ],
+    "emailVerified": true,
+    "verifiedAt": "2026-10-10T16:37:30.660Z",
+    "createdAt": "2026-10-10T16:37:30.660Z",
+    "updatedAt": "2026-10-10T16:37:30.821Z",
+    "emailStatus": {
+      "registrationEmail": {
+        "status": "sent",
+        "sentAt": "2026-10-10T16:37:30.660Z"
+      },
+      "selectionEmail": {
+        "status": "not_sent"
+      }
+    },
+    "approvedAt": "2026-10-10T16:37:30.792Z",
+    "approvedBy": "usr-admin-zeta-ecell",
+    "rejectionReason": "Evaluated for round 1."
+  },
+  {
+    "id": "team-1791652794152-c1e449",
+    "registrationId": "ZETA-2026-LQNV",
+    "name": "QuantumForge_mv2ntbkr",
+    "teamCode": "ZETA-QUAN-4306",
+    "teamSize": 2,
+    "leaderId": "usr-lead-1791652794153",
+    "leaderName": "John Matrix",
+    "leaderEmail": "leader_mv2ntbkr@dce.ac.in",
+    "phone": "9876543210",
+    "department": "Computer Science & Engineering",
+    "year": "3rd Year",
+    "college": "Dronacharya College of Engineering",
+    "challengeId": "open-innovation",
+    "challengeCode": "OPEN-INNOVATION",
+    "challengeTitle": "Open Innovation Track",
+    "members": [
+      {
+        "id": "mem-1791652794153-1",
+        "name": "Sarah Connor",
+        "email": "member_mv2ntbkr@dce.ac.in",
+        "phone": "9876543211",
+        "college": "Dronacharya College of Engineering",
+        "department": "Computer Science & Engineering",
+        "year": "3rd Year",
+        "role": "Member"
+      }
+    ],
+    "pptFile": {
+      "fileId": "ppt-fac6671f-68a3-4768-a7a9-99d722aa1c14.pdf",
+      "originalName": "QuantumForge_Pitch.pdf",
+      "mimeType": "application/pdf",
+      "sizeBytes": 52,
+      "uploadedAt": "2026-10-10T17:19:54.151Z",
+      "storedPath": "C:\\Users\\steni\\OneDrive\\Desktop\\ZETATHON\\server\\data\\uploads\\ppt-fac6671f-68a3-4768-a7a9-99d722aa1c14.pdf"
+    },
+    "status": "not_shortlisted",
+    "auditLog": [
+      {
+        "id": "aud-1791652794408-tyo2",
+        "timestamp": "2026-10-10T17:19:54.408Z",
+        "changedBy": "organizer",
+        "previousStatus": "waitlisted",
+        "newStatus": "not_shortlisted",
+        "reason": "Evaluated for round 1."
+      },
+      {
+        "id": "aud-1791652794394-0mp5",
+        "timestamp": "2026-10-10T17:19:54.394Z",
+        "changedBy": "organizer",
+        "previousStatus": "shortlisted",
+        "newStatus": "waitlisted",
+        "reason": "Placed in reserve pool."
+      },
+      {
+        "id": "aud-1791652794378-odl7",
+        "timestamp": "2026-10-10T17:19:54.378Z",
+        "changedBy": "usr-admin-zeta-ecell",
+        "previousStatus": "pending_approval",
+        "newStatus": "shortlisted"
+      },
+      {
+        "id": "aud-1791652794216-init",
+        "timestamp": "2026-10-10T17:19:54.216Z",
+        "changedBy": "system",
+        "previousStatus": "pending",
+        "newStatus": "pending_approval",
+        "reason": "Team registered directly. Entered organizer review queue."
+      }
+    ],
+    "emailVerified": true,
+    "verifiedAt": "2026-10-10T17:19:54.216Z",
+    "createdAt": "2026-10-10T17:19:54.216Z",
+    "updatedAt": "2026-10-10T17:19:54.408Z",
+    "emailStatus": {
+      "registrationEmail": {
+        "status": "sent",
+        "sentAt": "2026-10-10T17:19:54.216Z"
+      },
+      "selectionEmail": {
+        "status": "not_sent"
+      }
+    },
+    "approvedAt": "2026-10-10T17:19:54.378Z",
+    "approvedBy": "usr-admin-zeta-ecell",
+    "rejectionReason": "Evaluated for round 1."
+  }
+]

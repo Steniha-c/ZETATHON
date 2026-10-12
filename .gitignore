@@ -1,0 +1,25 @@
+# Node modules & builds
+node_modules/
+dist/
+build/
+.cache/
+
+# Environment files and credentials
+.env
+*.env
+.env.*
+!.env.example
+*.env.local
+
+# Server data & private uploads
+server/data/uploads/
+data/uploads/
+server/dist/
+client/dist/
+
+# OS and Editor files
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
