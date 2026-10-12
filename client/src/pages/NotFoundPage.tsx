@@ -4,7 +4,7 @@ import { Terminal, ArrowLeft } from 'lucide-react';
 
 export const NotFoundPage: React.FC = () => {
   return (
-    <div className="min-h-screen pt-32 pb-20 px-4 flex items-center justify-center text-center relative z-10">
+    <div className="min-h-screen pt-32 pb-20 px-4 flex items-center justify-center text-center relative z-10 not-found-page">
       <div className="max-w-md space-y-6">
         <div className="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 mx-auto">
           <Terminal className="w-8 h-8" />

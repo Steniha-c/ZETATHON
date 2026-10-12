@@ -51,9 +51,27 @@ export const Navbar: React.FC = () => {
     }
   };
 
+  if (isAdminRoute) {
+    return (
+      <header className="admin-global-nav fixed inset-x-0 top-0 z-50">
+        <div className="admin-global-nav__inner">
+          <Link to="/admin" className="admin-global-nav__identity" aria-label="ZETATHON organizer console">
+            <img src="/zeta-logo.jpg" alt="" />
+            <div><strong>ZETATHON</strong><span>ORGANIZER CONSOLE</span></div>
+          </Link>
+          <div className="admin-global-nav__actions">
+            <span className="admin-user">{user?.fullName || user?.email || 'Organizer'} · ADMIN</span>
+            <Link to="/" title="Open public website">Public site</Link>
+            <button onClick={logout} title="Sign out"><LogOut className="w-3.5 h-3.5" /><span>Sign out</span></button>
+          </div>
+        </div>
+      </header>
+    );
+  }
+
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`portal-global-nav fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'portal-global-nav--scrolled' : ''} ${
         isScrolled
           ? isAdminRoute
             ? 'bg-white/90 backdrop-blur-xl border-b border-pink-200/90 shadow-[0_4px_25px_rgba(244,114,182,0.18)] py-3'

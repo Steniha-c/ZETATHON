@@ -214,6 +214,16 @@ export const api = {
       return fetchJSON<{ success: boolean; data: any }>('/admin/overview');
     },
 
+    async getAnnouncements() {
+      const res = await fetchJSON<{ success: boolean; data: Announcement[] }>('/announcements');
+      return res.data;
+    },
+
+    async getConfig() {
+      const res = await fetchJSON<{ success: boolean; data: HackathonConfig }>('/config');
+      return res.data;
+    },
+
     async getTeams(params: { search?: string; status?: string; challenge?: string } = {}) {
       const searchParams = new URLSearchParams();
       if (params.search) searchParams.append('search', params.search);

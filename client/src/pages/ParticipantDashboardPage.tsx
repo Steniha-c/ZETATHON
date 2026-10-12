@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import {
-  Users, Terminal, Clock, CheckCircle2, AlertCircle, Copy,
-  ExternalLink, UploadCloud, Bell, Award, FileCode, Check, Shield,
+  Users, Clock, CheckCircle2, AlertCircle, Copy,
+  ExternalLink, UploadCloud, Bell, FileCode, Check,
   Layers, Lock, Sparkles, Send
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.js';
 import { HACKATHON_CONFIG } from '../hackathon.config.js';
 import { CountdownTimer } from '../components/common/CountdownTimer.js';
 import { api } from '../services/api.js';
-import { Submission, Announcement } from '../types/index.js';
+import { Announcement } from '../types/index.js';
 import { Link } from 'react-router-dom';
 
 export const ParticipantDashboardPage: React.FC = () => {
@@ -50,7 +49,7 @@ export const ParticipantDashboardPage: React.FC = () => {
         if (subRes.success && subRes.submission) {
           setSubmission(subRes.submission);
         }
-      } catch (err) {
+      } catch {
         // Fallback
       }
     };
@@ -128,7 +127,7 @@ export const ParticipantDashboardPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen pt-28 pb-20 px-4 sm:px-6 lg:px-8 relative z-10">
+    <div className="min-h-screen pt-28 pb-20 px-4 sm:px-6 lg:px-8 relative z-10 participant-page">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Top Header Card */}
         <div className="rounded-2xl border border-cyan-500/30 bg-slate-900/60 p-6 sm:p-8 backdrop-blur-xl relative overflow-hidden shadow-2xl flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -185,10 +184,10 @@ export const ParticipantDashboardPage: React.FC = () => {
               </div>
               <div>
                 <h3 className="text-sm font-bold font-mono uppercase tracking-wider text-amber-300">
-                  Email verified — Awaiting organizer approval
+                  Registration received — Awaiting organizer review
                 </h3>
                 <p className="text-xs text-amber-200/80 mt-1 leading-relaxed">
-                  Your email has been confirmed. The ZETATHON organizing committee is currently reviewing your team registration. Project submission features will unlock once your team is approved.
+                  Your team registration is in the organizer review queue. Project submission features will unlock once your team is approved.
                 </p>
               </div>
             </div>
@@ -248,7 +247,7 @@ export const ParticipantDashboardPage: React.FC = () => {
               </div>
               <div>
                 <h3 className="text-sm font-bold font-mono uppercase tracking-wider text-emerald-300">
-                  Registration Approved & Verified
+                  Registration Approved
                 </h3>
                 <p className="text-xs text-emerald-200/80 mt-1 leading-relaxed">
                   Your team is officially cleared to hack! Build your project and submit your deliverables before the countdown concludes.

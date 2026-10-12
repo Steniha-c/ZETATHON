@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Terminal, Lock, Mail, ArrowRight, AlertCircle, KeyRound } from 'lucide-react';
+import { Lock, Mail, ArrowRight, AlertCircle, KeyRound } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.js';
 import { api } from '../services/api.js';
 
@@ -65,11 +65,23 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen pt-28 pb-20 px-4 sm:px-6 lg:px-8 relative z-10 flex items-center justify-center">
+    <div className="auth-page">
+      <div className="auth-layout">
+        <aside className="auth-story" aria-label="ZETATHON participant access">
+          <div className="auth-story__brand">
+            <img src="/zeta-logo.jpg" alt="" />
+            <div><strong>ZETATHON</strong><small>ZETA • MONARCH LEVEL</small></div>
+          </div>
+          <div className="auth-story__body">
+            <span className="auth-story__kicker">One arena · many ways forward</span>
+            <h2>Make your next idea <span>count.</span></h2>
+            <p>Sign in to follow your team’s registration and manage its project submission through the existing participant portal.</p>
+          </div>
+        </aside>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md"
+        className="w-full max-w-md auth-form-column"
       >
         <div className="text-center mb-6 space-y-3">
           <div className="w-16 h-16 rounded-2xl overflow-hidden border border-cyan-400/50 p-0.5 bg-black mx-auto shadow-[0_0_30px_rgba(0,242,254,0.35)]">
@@ -232,6 +244,7 @@ export const LoginPage: React.FC = () => {
           </Link>
         </div>
       </motion.div>
+      </div>
     </div>
   );
 };
