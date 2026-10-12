@@ -684,7 +684,8 @@ export const RegisterPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full sm:w-auto px-8 py-3.5 rounded-xl font-mono text-xs font-black uppercase tracking-wider text-black bg-cyan-400 hover:bg-cyan-300 transition-all shadow-[0_0_25px_rgba(0,242,254,0.4)] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+                aria-busy={isSubmitting}
+                className={`registration-submit w-full sm:w-auto px-8 py-3.5 rounded-xl font-mono text-xs font-black uppercase tracking-wider text-black bg-cyan-400 hover:bg-cyan-300 transition-all shadow-[0_0_25px_rgba(0,242,254,0.4)] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer ${isSubmitting ? 'is-submitting' : ''}`}
               >
                 {isSubmitting ? (
                   <>
@@ -809,7 +810,8 @@ export const RegisterPage: React.FC = () => {
                 type="button"
                 disabled={isSubmitting}
                 onClick={handleFinalSubmit}
-                className="flex-1 py-3.5 px-6 rounded-xl font-mono text-xs font-black uppercase tracking-wider text-black bg-cyan-400 hover:bg-cyan-300 transition-all shadow-[0_0_25px_rgba(0,242,254,0.4)] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+                aria-busy={isSubmitting}
+                className={`registration-submit flex-1 py-3.5 px-6 rounded-xl font-mono text-xs font-black uppercase tracking-wider text-black bg-cyan-400 hover:bg-cyan-300 transition-all shadow-[0_0_25px_rgba(0,242,254,0.4)] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer ${isSubmitting ? 'is-submitting' : ''}`}
               >
                 {isSubmitting ? (
                   <>
